@@ -1,0 +1,32 @@
+from xbmcswift2 import Plugin
+
+from resources.lib.ftvideos.api import FTVideos
+
+plugin = Plugin()
+
+@plugin.route('/')
+def main_menu():
+ items = [
+     {'label': 'Show Subjects', 'path': plugin.url_for('show_subjects')}
+ ]
+ return items
+
+@plugin.route('/subjects/')
+def show_subjects():
+    api = AcademicEarth()
+    subjects = api.get_subjects()
+
+    items = [{
+        'label': subject.name,
+        'path': plugin.url_for('show_subject_info', url=subject.url),
+    } for subject in subjects]
+
+    sorted_items = sorted(items, key=lambda item: item['label'])
+    return sorted_items
+
+@plugin.route('/subjects/<url>/')
+def show_subject_info(url):
+    pass
+
+if __name__ == '__main__':
+    plugin.run()
